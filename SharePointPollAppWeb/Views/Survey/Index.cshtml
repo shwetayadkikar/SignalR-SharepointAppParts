@@ -1,0 +1,41 @@
+﻿@model List<SharePointPollAppWeb.Models.SurveyModel>
+@{
+    ViewBag.Title = "Survey Page";
+}
+
+@if (Model != null && Model.Any())
+{
+    <h2>Hi @ViewBag.Username, please select one option as your vote</h2>
+
+    foreach (var question in Model)
+    {
+        <div style="float:left;width:100%" id="@question.SurveyId" class="survey">
+            @Html.Partial("_SurveyQuestion", question)
+        </div>
+    }
+    <input type="button" id="btnNext" value="Next >" style="margin:10px;float:right;" onclick="onNext()" />
+}
+else
+{
+    <div>No Surveys found.</div>
+}
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".survey").hide();
+        $(".survey#1").show();
+    });
+
+    function onNext() {
+        debugger;
+        var currentSuveyId = $(".survey:Visible").attr('id');
+        var nextSurveyId = parseInt(currentSuveyId) + 1;
+        $(".survey#" + currentSuveyId).hide();
+        $(".survey#" + nextSurveyId).show();
+        var nextToNextSurveyId = parseInt(nextSurveyId) + 1;
+        if ($(".survey#" + nextToNextSurveyId).length > 0)
+            $("#btnNext").show();
+        else
+            $("#btnNext").hide();
+    }
+</script>
