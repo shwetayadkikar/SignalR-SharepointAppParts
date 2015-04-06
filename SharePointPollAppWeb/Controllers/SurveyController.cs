@@ -53,7 +53,7 @@ namespace SharePointPollAppWeb.Controllers
                     foreach (var survey in model)
                     {
                         var surveyAnswerEntries = answers.Where(x => Convert.ToString(x["QuestionNumber"]).Equals(survey.SurveyId)).ToList();
-                        var surveyAnswers = surveyAnswerEntries.Select(x => Convert.ToString(x["Title"])).ToList();
+                        var surveyAnswers = surveyAnswerEntries.Select(x => new SurveyAnswer() { Answer = Convert.ToString(x["Title"]), VoteCount = 0 }).ToList();
                         survey.Answers = surveyAnswers;
                     }
                 }

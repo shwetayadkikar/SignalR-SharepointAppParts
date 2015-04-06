@@ -11,9 +11,9 @@
     {
         <div style="clear:both; margin:10px;">
             <div style="float:left; margin-right:20px;">
-                @Html.RadioButton("SelectedAnswer", item)
+                @Html.RadioButton("SelectedAnswer", item.Answer)
             </div>
-            <div>@Html.DisplayFor(m => item)</div>
+            <div>@Html.DisplayFor(m => item.Answer)</div>
 
         </div>
     }
