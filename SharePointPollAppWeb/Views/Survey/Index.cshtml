@@ -9,7 +9,7 @@
 
     foreach (var question in Model)
     {
-        <div style="float:left;width:100%" id="@question.SurveyId" class="survey">
+        <div style="float:left;width:100%; display:none;" id="@question.SurveyId" class="survey">
             @Html.Partial("_SurveyQuestion", question)
         </div>
     }
@@ -51,7 +51,7 @@ else
 
         $(document).ready(function () {
             debugger;
-            $(".survey").hide();
+            //$(".survey").hide();
             $(".survey#1").show();
 
             SignalR_API.startConnection(SignalR_API.initSubmit);
