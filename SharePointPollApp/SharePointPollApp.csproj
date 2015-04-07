@@ -46,7 +46,13 @@
     <Content Include="AppIcon.png">
       <OpcRelationship>manifest-icon</OpcRelationship>
     </Content>
+    <Content Include="AppPollResultWebPart\Elements.xml">
+      <OpcRelationship>feature-elementmanifest</OpcRelationship>
+    </Content>
     <Content Include="AppPollWebPart\Elements.xml">
+      <OpcRelationship>feature-elementmanifest</OpcRelationship>
+    </Content>
+    <Content Include="AzureWebPartTest\Elements.xml">
       <OpcRelationship>feature-elementmanifest</OpcRelationship>
     </Content>
   </ItemGroup>
@@ -68,8 +74,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="AppPollResultWebPart\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{e516c781-8b76-4a1e-bede-15908cce0009}</SharePointProjectItemId>
+    </None>
     <None Include="AppPollWebPart\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{2b48a11c-990d-4449-b9ae-9331adbbe4be}</SharePointProjectItemId>
+    </None>
+    <None Include="AzureWebPartTest\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{da924a99-711e-40a7-99e3-c96599c48d9a}</SharePointProjectItemId>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
