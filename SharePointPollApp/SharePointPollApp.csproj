@@ -22,6 +22,7 @@
     <WorkflowPartId>{21873ccc-e099-43db-93b9-f38f1054a725}</WorkflowPartId>
     <CspkgPartId>{fc704972-f97d-464d-96d8-f8ac880accc3}</CspkgPartId>
     <SqlPackagePartId>{8c327ecb-e85f-4b6b-aa27-d50bba92714d}</SqlPackagePartId>
+    <ActivePublishProfile>mysharepointwebapp - Web Deploy</ActivePublishProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
