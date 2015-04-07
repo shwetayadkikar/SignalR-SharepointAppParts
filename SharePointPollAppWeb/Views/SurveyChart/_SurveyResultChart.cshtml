@@ -1,0 +1,47 @@
+﻿
+@model SharePointPollAppWeb.Models.SurveyChartViewModel
+
+<div class="pieChartContainer" id="pieChartContainer @Model.SurveyId" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto">
+
+</div>
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+
+
+<script>
+
+    // Build the chart
+    $(function () {
+        chart = new Highcharts.Chart({
+            chart: {
+                renderTo: "pieChartContainer " + @Model.SurveyId,
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false
+            },
+            title: {
+                text: '@Model.Question',
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: false
+                    },
+                    showInLegend: true
+                }
+            },
+            series: [{
+                type: 'pie',
+                name: 'Polls',
+                data: @Html.Raw(Json.Encode(Model.Answers.ToArray())),
+            }]
+        });
+    });
+
+
+</script>

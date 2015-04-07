@@ -46,7 +46,7 @@ namespace SharePointPollAppWeb
                 throw new ArgumentNullException("httpRequest");
             }
 
-            string spHostUrlString = TokenHelper.EnsureTrailingSlash(httpRequest.QueryString[SPHostUrlKey]);           
+            string spHostUrlString = TokenHelper.EnsureTrailingSlash(httpRequest.QueryString[SPHostUrlKey]);
 
             if (spHostUrlString == null)
                 spHostUrlString = TokenHelper.EnsureTrailingSlash(httpRequest[SPHostUrlKey]);

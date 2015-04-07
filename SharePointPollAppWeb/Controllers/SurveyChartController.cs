@@ -1,21 +1,21 @@
-﻿using Microsoft.SharePoint.Client;
-using SharePointPollAppWeb.Models;
-using SharePointPollAppWeb.SPHelper;
-using SharePointPollAppWeb.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.SharePoint.Client;
+using SharePointPollAppWeb.Models;
+using SharePointPollAppWeb.SPHelper;
+using SharePointPollAppWeb.Utilities;
 
 namespace SharePointPollAppWeb.Controllers
 {
-    public class SurveyController : Controller
+    public class SurveyChartController : Controller
     {
         [SharePointContextFilter]
         public ActionResult Index()
         {
-            List<SurveyModel> model = new List<SurveyModel>();
+            List<SurveyChartViewModel> model = new List<SurveyChartViewModel>();
             User spUser = null;
 
             var spContext = SharePointContextProvider.Current.GetSharePointContext(HttpContext);
@@ -32,17 +32,11 @@ namespace SharePointPollAppWeb.Controllers
                     Response.Cache.SetCacheability(HttpCacheability.ServerAndNoCache);
 
 
-                    //set cookies
-                    HttpCookieCollection cookieCollection = new HttpCookieCollection();
-                    Response.Cookies.Set(new HttpCookie(Constants.USERNAME_KEY, spUser.Title));
-                    Uri spHostUrl = SharePointContext.GetSPHostUrl(HttpContext.Request);
-                    Response.Cookies.Set(new HttpCookie(Constants.SPHOSTURL_KEY, spHostUrl.AbsoluteUri));
-                    
                     //Get Survey List
                     var items = SharePointHelper.GetSharePointList(clientContext, Constants.SURVEY_LIST);
                     foreach (var item in items)
                     {
-                        SurveyModel survey = new SurveyModel();
+                        SurveyChartViewModel survey = new SurveyChartViewModel();
                         survey.SurveyId = item["QuestionNumber"].ToString();
                         survey.Question = item["Title"].ToString();
                         model.Add(survey);
@@ -53,9 +47,11 @@ namespace SharePointPollAppWeb.Controllers
                     foreach (var survey in model)
                     {
                         var surveyAnswerEntries = answers.Where(x => Convert.ToString(x["QuestionNumber"]).Equals(survey.SurveyId)).ToList();
-                        var surveyAnswers = surveyAnswerEntries.Select(x => new SurveyAnswer() { Answer = Convert.ToString(x["Title"]), VoteCount = 0 }).ToList();
-                        survey.Answers = surveyAnswers;
+                        var surveyAnswers = surveyAnswerEntries.Select(x => new AnswerViewModel() { name = Convert.ToString(x["Title"]), y = Convert.ToInt32(x["VoteCount"]), selected = false, sliced = false }).ToList();
+                        double totalVotes = surveyAnswers.Select(x => x.y).Sum();
+                        survey.Answers = surveyAnswers.Select(x => { x.y = (x.y / totalVotes) * 100; return x; }).ToList();
                     }
+
                 }
             }
 
@@ -63,36 +59,30 @@ namespace SharePointPollAppWeb.Controllers
         }
 
         [SharePointContextFilter]
-        [HttpPost]
-        public ActionResult SubmitVote(SurveyModel surveyAnswer)
+        public ActionResult GetSurveyChart(int surveyId)
         {
-            string username = Request.Cookies[Constants.USERNAME_KEY].Value;  
+            SurveyChartViewModel survey = new SurveyChartViewModel();
             var spContext = SharePointContextProvider.Current.GetSharePointContext(HttpContext);
+
             using (var clientContext = spContext.CreateUserClientContextForSPHost())
             {
                 if (clientContext != null)
                 {
-                    ListItemCollection items = SharePointHelper.GetSharePointList(clientContext, Constants.SURVEY_ANSWERS_LIST);
-                    ListItem listItem = items != null  ? items.Where(x => x["QuestionNumber"].ToString() == surveyAnswer.SurveyId
-                                                                       && x["Title"].Equals(surveyAnswer.SelectedAnswer)).FirstOrDefault() : null;
+                    //Get Survey List
+                    var items = SharePointHelper.GetSharePointList(clientContext, Constants.SURVEY_LIST);
+                    var item = items.Where(x => Convert.ToInt32(x["QuestionNumber"]) == surveyId).FirstOrDefault();
+                    survey.SurveyId = item["QuestionNumber"].ToString();
+                    survey.Question = item["Title"].ToString();
 
-                    if (listItem != null)
-                    {
-                        listItem["VoteCount"] = Convert.ToInt32(listItem["VoteCount"]) + 1;
-                        listItem.Update();
-                        clientContext.ExecuteQuery();
-                    }
-                    else
-                    {
-                        //error handling
-                    }
+                    //Get Survey answers List
+                    var answers = SharePointHelper.GetSharePointList(clientContext, Constants.SURVEY_ANSWERS_LIST);
+                    var surveyAnswerEntries = answers.Where(x => Convert.ToString(x["QuestionNumber"]).Equals(survey.SurveyId)).ToList();
+                    var surveyAnswers = surveyAnswerEntries.Select(x => new AnswerViewModel() { name = Convert.ToString(x["Title"]), y = Convert.ToInt32(x["VoteCount"]), selected = false, sliced = false }).ToList();
+                    double totalVotes = surveyAnswers.Select(x => x.y).Sum();
+                    survey.Answers = surveyAnswers.Select(x => { x.y = (x.y / totalVotes) * 100; return x; }).ToList();
                 }
             }
-            return Json(new { data = surveyAnswer, user = username },
-            JsonRequestBehavior.AllowGet);
+            return PartialView("_SurveyResultChart", survey);
         }
-
-
-
     }
 }

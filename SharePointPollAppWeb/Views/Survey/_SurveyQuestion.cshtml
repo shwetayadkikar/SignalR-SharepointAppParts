@@ -1,6 +1,6 @@
 ﻿@model SharePointPollAppWeb.Models.SurveyModel
 
- 
+
 @Html.HiddenFor(m => m.SurveyId)
 <div>
     @Html.DisplayFor(m => m.Question)
@@ -11,42 +11,17 @@
     {
         <div style="clear:both; margin:10px;">
             <div style="float:left; margin-right:20px;">
-                @Html.RadioButton("SelectedAnswer", item)
+                @Html.RadioButton("SelectedAnswer", item.Answer)
             </div>
-            <div>@Html.DisplayFor(m => item)</div>
+            <div>@Html.DisplayFor(m => item.Answer)</div>
 
         </div>
     }
 </div>
 <div>
-    <input type="button" value="Vote" style="margin:10px;" onclick="submitVote()" />
+    <input type="button" class="submitVote" value="Vote" style="margin:10px;" />
 </div>
 
 
-<script type="text/javascript">
-    function notifyVote(data) {
-        console.log("signal r code goes here");
-        console.log(data);
-    }
 
-    function submitVote()
-    {
-        debugger;
-        var surveyId = $(".survey:Visible").attr('id');
-        var currentSurveyDiv = $(".survey#" + surveyId);
-        var selectedAnswer = $(currentSurveyDiv.find($("input[name='SelectedAnswer']:checked"))).val();
 
-        $.ajax({
-            type: 'POST',
-            data: { SurveyId: surveyId, SelectedAnswer: selectedAnswer },
-            url: "Survey/SubmitVote",
-            success: function (data, textStatus, jqXHR) {
-                notifyVote(data);
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.log('Error: ' + errorThrown);
-            }
-        });
-    }
-
-</script>
