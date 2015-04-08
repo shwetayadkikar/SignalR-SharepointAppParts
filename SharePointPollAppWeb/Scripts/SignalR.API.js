@@ -1,9 +1,10 @@
 ﻿var SignalR_API = {
 
-	theHub: $.connection.theHub,
+	 
 
-	initClient: function () {
-		this.theHub.client.showNotifiedVotes = function (user, data) {
+    initReceiver: function () {
+        var theHub = $.connection.theHub;
+        theHub.client.showNotifiedVotes = function showNotifiedVotes(user, data) {
 
 			console.log(user);
 			console.log(data);
@@ -33,8 +34,9 @@
 			toastr.warning(encodedMsg);
 			
 		};
-	},
-	initSubmit: function () {
+    },
+
+	initSender: function () {
 		var self = this;
 		$('.submitVote').click(function () {
 			// Call the Send method on the hub.
@@ -48,8 +50,9 @@
 				data: { SurveyId: surveyId, SelectedAnswer: selectedAnswer },
 				url: "Survey/SubmitVote",
 				success: function (data, textStatus, jqXHR) {
-					debugger;
-					SignalR_API.theHub.server.notifyVotes(data.user, data.data);
+				    debugger;
+				    var theHub = $.connection.theHub;
+					theHub.server.notifyVotes(data.user, data.data);
 				},
 				error: function (jqXHR, textStatus, errorThrown) {
 					console.log('Error: ' + errorThrown);
@@ -57,6 +60,7 @@
 			});
 		});
 	},
+
 	startConnection: function (callback) {
 		$.connection.hub.start().done(function () {
 			console.log("connection started");
