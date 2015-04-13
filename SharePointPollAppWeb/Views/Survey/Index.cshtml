@@ -54,7 +54,7 @@ else
             //$(".survey").hide();
             $(".survey#1").show();
 
-            SignalR_API.startConnection(SignalR_API.initSender);
+            SignalR_API.startConnection(SignalR_API.initSender, '@ViewBag.GroupName');
 
         });
     </script>

@@ -29,6 +29,7 @@ namespace SharePointPollAppWeb.Controllers
                     clientContext.Load(spUser, user => user.Title);
                     clientContext.ExecuteQuery();
                     ViewBag.UserName = spUser.Title;
+                    ViewBag.GroupName = GetGroupName(spUser.Title);
                     Response.Cache.SetCacheability(HttpCacheability.ServerAndNoCache);
 
 
@@ -83,6 +84,21 @@ namespace SharePointPollAppWeb.Controllers
                 }
             }
             return PartialView("_SurveyResultChart", survey);
+        }
+
+        private string GetGroupName(string username)
+        {
+            switch (username)
+            {
+                case "shweta gadre":
+                    return "group1";
+                case "test user":
+                    return "group1";
+                case "test user1":
+                    return "group2";
+                default:
+                    return "group1";
+            }
         }
     }
 }

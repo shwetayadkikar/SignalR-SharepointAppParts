@@ -37,7 +37,7 @@
             $(".surveyChartWrapper").hide();
             $(".surveyChartWrapper#1").show();
             SignalR_API.initReceiver();
-            SignalR_API.startConnection();
+            SignalR_API.startConnection(SignalR_API.addToGroup,'@ViewBag.GroupName');
         });
 
 

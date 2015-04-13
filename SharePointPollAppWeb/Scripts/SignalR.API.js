@@ -8,6 +8,7 @@
 
 			console.log(user);
 			console.log(data);
+			
 			//make ajax call to get particular survey chart : set default surveyId to load or replace the exact div  with the new chart and show that div 
 			var surveyId = data.SurveyId;
 
@@ -36,7 +37,7 @@
 		};
     },
 
-	initSender: function () {
+	initSender: function (groupName) {
 		var self = this;
 		$('.submitVote').click(function () {
 			// Call the Send method on the hub.
@@ -52,7 +53,13 @@
 				success: function (data, textStatus, jqXHR) {
 				    debugger;
 				    var theHub = $.connection.theHub;
-					theHub.server.notifyVotes(data.user, data.data);
+				    if (groupName) {
+				        theHub.server.notifyVotesToGroup(data.user, data.data, groupName);
+				    }
+				    else {
+				        theHub.server.notifyVotes(data.user, data.data);
+				    }
+				   
 				},
 				error: function (jqXHR, textStatus, errorThrown) {
 					console.log('Error: ' + errorThrown);
@@ -61,11 +68,22 @@
 		});
 	},
 
-	startConnection: function (callback) {
+	addToGroup: function (groupName)
+	{
+	    var theHub = $.connection.theHub;
+	    theHub.server.addToGroup(groupName);
+	},
+
+	startConnection: function (callback, callback_param) {
 		$.connection.hub.start().done(function () {
 			console.log("connection started");
 			if (callback) {
-				callback();
+			    if (callback_param) {
+			        callback(callback_param);
+			    }
+			    else {
+			        callback();
+			    }
 			}
 		});
 	}
